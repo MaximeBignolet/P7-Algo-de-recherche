@@ -19,71 +19,77 @@
   <body>
     <div id="wrapper" class="container mx-auto">
       <header class="bg-no-repeat bg-[url('/assets/bg/bg.jpg')] bg-cover">
-        <div class="flex justify-center pt-6">
+        <div class="flex justify-center pt-6 md:justify-start md:pl-10">
           <img
             src="./assets/logo/les-petits-plats.svg"
             alt="Logo Les Petits Plats"
           />
         </div>
-        <h1 class="text-[#FFD15B] font-anton p-10 text-center">
-          CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN,SIMPLES ET
-          DÉLICIEUSES
-        </h1>
+        <div class="md:flex md:justify-center">
+          <h1
+            class="text-[#FFD15B] font-anton p-10 text-center md:text-4xl md:w-1/2"
+          >
+            CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN,SIMPLES ET
+            DÉLICIEUSES
+          </h1>
+        </div>
         <div class="flex justify-center relative">
           <input
             type="search"
             name="search_bar"
             id="search"
-            class="w-4/5 rounded-lg mb-5 p-2 placeholder:text-xs placeholder:p-4"
+            class="w-4/5 rounded-lg mb-5 p-2 placeholder:text-xs placeholder:p-4 md:placeholder:text-base md:w-2/5"
             placeholder="Rechercher une recette, un ingrédient, ..."
           />
           <i
-            class="fa-solid fa-magnifying-glass absolute right-10 top-[5px] rounded-lg text-white bg-[#1B1B1B] p-2 text-sm cursor-pointer hover:bg-[#FFD15B]"
+            class="fa-solid fa-magnifying-glass absolute right-10 top-[5px] rounded-lg text-white bg-[#1B1B1B] p-2 text-sm cursor-pointer hover:bg-[#FFD15B] transition-all duration-300 md:right-[30.5%]"
           ></i>
         </div>
       </header>
       <main class="p-3 bg-[#EDEDED]">
         <div
-          class="btn-container flex flex-wrap w-full justify-around items-center"
+          class="btn-container flex md:justify-between flex-wrap w-full justify-around items-center"
         >
-          <div class="btn-filter">
-            <label for="ingredients">
+          <div class="btn-filter md:pl-28">
+            <label for="ingredients" class="md:mr-5">
               <select
                 name="ingredients"
                 id="ingredients"
-                class="rounded-lg p-1.5 text-xs"
+                class="rounded-lg p-1.5 text-xs md:text-sm"
               >
                 <option value="ingredients" class="rounded-full">
                   Ingrédients
                 </option>
+                <option value="search"></option>
               </select>
             </label>
-          </div>
-          <div class="btn-filter">
-            <label for="ingredients">
+            <label for="appareils" class="md:mr-5">
               <select
                 name="appareils"
                 id="appareils"
-                class="rounded-lg p-1.5 text-xs"
+                class="rounded-lg p-1.5 text-xs md:text-sm"
               >
                 <option value="appareils">Appareils</option>
               </select>
             </label>
-          </div>
-          <div class="btn-filter">
-            <label for="ingredients">
+            <label for="ustensiles">
               <select
                 name="ustensiles"
                 id="ustensiles"
-                class="rounded-lg p-1.5 text-xs"
+                class="rounded-lg p-1.5 text-xs md:text-sm"
               >
                 <option value="ustensiles">Ustensiles</option>
               </select>
             </label>
           </div>
-          <p class="font-semibold font-anton pt-5">1500 recettes</p>
+          <p class="font-semibold font-anton pt-5 md:pt-0 md:pr-28">
+            1500 recettes
+          </p>
         </div>
-        <div id="recipe-container" class="flex flex-col"></div>
+        <div
+          id="recipe-container"
+          class="flex flex-col md:flex-row md:flex-wrap md:justify-center md:gap-12 px-5"
+        ></div>
       </main>
     </div>
     <script src="./index.js" type="module"></script>

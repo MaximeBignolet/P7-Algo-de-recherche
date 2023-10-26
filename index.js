@@ -5,16 +5,16 @@ import recipe from "./recipe.js";
 
   recipe.slice(0, 10).forEach((recette) => {
     recipeContainer.innerHTML += `
-    <div class="card mt-10 bg-white rounded-lg shadow-cardShadow">
+    <div class="card mt-10 bg-white rounded-xl shadow-cardShadow lg:w-[27%] md:w-[45%]">
         <img src="./assets/img/${recette.image}" alt="${
       recette.name
-    }" class="rounded-t-lg h-[200px] w-full object-cover"/>
+    }" class="rounded-t-lg h-[200px] md:h-[250px] w-full object-cover"/>
         <div class="pl-4">
         <h2 class="font-semibold font-anton pt-[32px] text-xl">${
           recette.name
         }</h2>
         <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide pt-[29px]">RECETTE</p>
-        <p class="font-manrope pt-5 line-clamp-4 mb-[29px]">${
+        <p class="font-manrope pt-5 line-clamp-4 mb-[29px] pr-5">${
           recette.description
         }</p>
         <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide">INGRÉDIENTS</p>
@@ -28,7 +28,7 @@ import recipe from "./recipe.js";
               ingredient.quantity = "";
             }
             return `
-            <li class="font-semibold w-[42%]">${ingredient.ingredient}<br/><span class="text-[#7A7A7A]">${ingredient.quantity} ${ingredient.unit}</span></li>
+            <li class="font-semibold w-[42%] md:text-sm">${ingredient.ingredient}<br/><span class="text-[#7A7A7A] md:text-xs">${ingredient.quantity} ${ingredient.unit}</span></li>
             `;
           })
           .join("")}
