@@ -1,9 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        anton: ["Anton"],
+      },
+    },
   },
-  plugins: [],
-}
-
+};
