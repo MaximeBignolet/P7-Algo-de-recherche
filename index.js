@@ -14,7 +14,7 @@ import recipe from "./recipe.js";
           recette.name
         }</h2>
         <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide pt-[29px]">RECETTE</p>
-        <p class="font-manrope pt-5 line-clamp-4 mb-[29px] pr-5">${
+        <p class="font-manrope pt-5 line-clamp-4 mb-[29px] pr-5 overflow-auto">${
           recette.description
         }</p>
         <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide">INGRÉDIENTS</p>
@@ -37,4 +37,30 @@ import recipe from "./recipe.js";
     </div>
     `;
   });
+
+  // 1- récupérer l'input
+  const inputSearch = document.getElementById("search");
+
+  //2- Déclarer une variable pour récupérer les données
+  let searchValue = "";
+
+  //3- récupérer les données passées dans l'input (e.target.value) avec un eventListener + algo pour vérifier SI des noms correspondent entre le recipe et le champ recherche
+
+  inputSearch.addEventListener("input", (e) => {
+    searchValue = e.target.value;
+    for (let i = 0; i < recipe.length; i++) {
+      //TODO trier aussi par ingrédients, description. Utiliser OU
+      if (
+        searchValue === recipe[i].name.substring(0, 3) ||
+        searchValue === recipe[i].description.substring(0, 3)
+      ) {
+        console.log(recipe[i].name, recipe[i].description);
+      }
+    }
+  });
 })();
+
+// searchValue === recipe[i].ingredients.substring(0, 3)
+// recipe[i].name.forEach((name) => {
+//   recipeContainer.innerHTML = `<p>${name}</p>`;
+// });
