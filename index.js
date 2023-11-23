@@ -45,23 +45,42 @@ displayRecipe(recipe)
 
 
 
-const searchFilter = () => {
-const inputSearch = document.getElementById('search');
-let searchValue = '';
+const debounce = (func, delay) => {
+    let debounceTimer;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+};
 
-inputSearch.addEventListener('input', (e) => {
-    searchValue = e.target.value.toLowerCase();
-    if(searchValue.length >= 3){
-    const filteredRecipe = recipe.filter((rec) => {
-        return rec.name.toLowerCase().includes(searchValue) ||
-            rec.description.toLowerCase().includes(searchValue) ||
-            rec.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(searchValue));
-        });
-    displayRecipe(filteredRecipe);
-    } else {
-        displayRecipe(recipe)
-    }
+const searchFilter = () => {
+    const inputSearch = document.getElementById('search');
+    let searchValue = '';
+
+    const handleInput = debounce((e) => {
+        searchValue = e.target.value.toLowerCase();
+        if (searchValue.length >= 3) {
+            const filteredRecipe = recipe.filter((rec) => {
+                return rec.lowerName.includes(searchValue) ||
+                    rec.lowerDescription.includes(searchValue) ||
+                    rec.lowerIngredients.some(ingredient => ingredient.includes(searchValue));
+            });
+            displayRecipe(filteredRecipe);
+        } else {
+            displayRecipe(recipe);
+        }
+    }, 300); // Définissez un délai de 300 ms
+
+    inputSearch.addEventListener('input', handleInput);
+};
+
+// Prétraitement des données (à faire une seule fois, si les données ne changent pas fréquemment)
+recipe.forEach(rec => {
+    rec.lowerName = rec.name.toLowerCase();
+    rec.lowerDescription = rec.description.toLowerCase();
+    rec.lowerIngredients = rec.ingredients.map(ing => ing.ingredient.toLowerCase());
 });
-}
 
 searchFilter();
