@@ -1,7 +1,9 @@
 import recipe from "./recipe.js";
 
-(function displayRecipe() {
+
+function displayRecipe(recipe) {
   const recipeContainer = document.getElementById("recipe-container");
+  recipeContainer.innerHTML = '';
 
   recipe.slice(0, 10).forEach((recette) => {
     recipeContainer.innerHTML += `
@@ -37,4 +39,27 @@ import recipe from "./recipe.js";
     </div>
     `;
   });
-})();
+};
+
+displayRecipe(recipe)
+
+
+
+const searchFilter = () => {
+const inputSearch = document.getElementById('search');
+let searchValue = '';
+
+inputSearch.addEventListener('input', (e) => {
+    searchValue = e.target.value.toLowerCase();
+    if(searchValue.length >= 3){
+    const filteredRecipe = recipe.filter((rec) => {
+        return rec.name.toLowerCase().includes(searchValue) ||
+            rec.description.toLowerCase().includes(searchValue) ||
+            rec.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(searchValue));
+        });
+    displayRecipe(filteredRecipe);
+    } else {
+        displayRecipe(recipe)
+    }
+});
+}
