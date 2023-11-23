@@ -41,6 +41,8 @@ function displayRecipe(recipe) {
 
 displayRecipe(recipe)
 
+const searchFilter = () => {
+
 // 1- récupérer l'input
 const inputSearch = document.getElementById("search");
 
@@ -74,3 +76,6 @@ inputSearch.addEventListener("input", (e) => {
     // enfin, on affiche le contenu du nouveau tableau avec la même logique d'affichage
     displayRecipe(filteredRecipe);
 });
+}
+
+searchFilter()
