@@ -52,6 +52,7 @@ inputSearch.addEventListener("input", (e) => {
     searchValue = e.target.value.toLowerCase();
     let filteredRecipe = [];
 
+    //Lancer la boucle uniquement si la recherche fait au moins 3 caractères
     if (searchValue.length >= 3) {
         for (let i = 0; i < recipe.length; i++) {
             let nameMatch = recipe[i].name.toLowerCase().includes(searchValue);
@@ -60,13 +61,16 @@ inputSearch.addEventListener("input", (e) => {
                 ingredient.ingredient.toLowerCase().includes(searchValue)
             );
 
+            //Si il y a un match, on push les match dans le nouveau tableau
             if (nameMatch || descriptionMatch || ingredientMatch) {
                 filteredRecipe.push(recipe[i]);
             }
         }
     } else {
+        //Sinon, le nouveau tableau est égal au tableau initial
         filteredRecipe = recipe;
     }
 
+    // enfin, on affiche le contenu du nouveau tableau avec la même logique d'affichage
     displayRecipe(filteredRecipe);
 });
