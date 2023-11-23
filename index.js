@@ -63,3 +63,5 @@ inputSearch.addEventListener('input', (e) => {
     }
 });
 }
+
+searchFilter();
