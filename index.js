@@ -1,8 +1,8 @@
 import recipe from "./recipe.js";
 
-(function displayRecipe() {
+function displayRecipe(recipe) {
   const recipeContainer = document.getElementById("recipe-container");
-
+  recipeContainer.innerHTML = '';
   recipe.slice(0, 10).forEach((recette) => {
     recipeContainer.innerHTML += `
     <div class="card mt-10 bg-white rounded-xl shadow-cardShadow lg:w-[27%] md:w-[45%]">
@@ -37,30 +37,36 @@ import recipe from "./recipe.js";
     </div>
     `;
   });
+}
 
-  // 1- récupérer l'input
-  const inputSearch = document.getElementById("search");
+displayRecipe(recipe)
 
-  //2- Déclarer une variable pour récupérer les données
-  let searchValue = "";
+// 1- récupérer l'input
+const inputSearch = document.getElementById("search");
 
-  //3- récupérer les données passées dans l'input (e.target.value) avec un eventListener + algo pour vérifier SI des noms correspondent entre le recipe et le champ recherche
+//2- Déclarer une variable pour récupérer les données
+let searchValue = "";
 
-  inputSearch.addEventListener("input", (e) => {
-    searchValue = e.target.value;
-    for (let i = 0; i < recipe.length; i++) {
-      //TODO trier aussi par ingrédients, description. Utiliser OU
-      if (
-        searchValue === recipe[i].name.substring(0, 3) ||
-        searchValue === recipe[i].description.substring(0, 3)
-      ) {
-        console.log(recipe[i].name, recipe[i].description);
-      }
+//3- récupérer les données passées dans l'input (e.target.value) avec un eventListener + algo pour vérifier SI des noms correspondent entre le recipe et le champ recherche
+inputSearch.addEventListener("input", (e) => {
+    searchValue = e.target.value.toLowerCase();
+    let filteredRecipe = [];
+
+    if (searchValue.length >= 3) {
+        for (let i = 0; i < recipe.length; i++) {
+            let nameMatch = recipe[i].name.toLowerCase().includes(searchValue);
+            let descriptionMatch = recipe[i].description.toLowerCase().includes(searchValue);
+            let ingredientMatch = recipe[i].ingredients.some(ingredient =>
+                ingredient.ingredient.toLowerCase().includes(searchValue)
+            );
+
+            if (nameMatch || descriptionMatch || ingredientMatch) {
+                filteredRecipe.push(recipe[i]);
+            }
+        }
+    } else {
+        filteredRecipe = recipe;
     }
-  });
-})();
 
-// searchValue === recipe[i].ingredients.substring(0, 3)
-// recipe[i].name.forEach((name) => {
-//   recipeContainer.innerHTML = `<p>${name}</p>`;
-// });
+    displayRecipe(filteredRecipe);
+});
