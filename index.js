@@ -42,37 +42,31 @@ function displayRecipe(recipe) {
 displayRecipe(recipe)
 
 const searchFilter = () => {
-
 // 1- récupérer l'input
 const inputSearch = document.getElementById("search");
-
 //2- Déclarer une variable pour récupérer les données
-let searchValue = "";
-
+    let searchValue = "";
 //3- récupérer les données passées dans l'input (e.target.value) avec un eventListener + algo pour vérifier SI des noms correspondent entre le recipe et le champ recherche
 inputSearch.addEventListener("input", (e) => {
     searchValue = e.target.value.toLowerCase();
     let filteredRecipe = [];
 
     //Lancer la boucle uniquement si la recherche fait au moins 3 caractères
-    if (searchValue.length >= 3) {
-        for (let i = 0; i < recipe.length; i++) {
-            let nameMatch = recipe[i].name.toLowerCase().includes(searchValue);
-            let descriptionMatch = recipe[i].description.toLowerCase().includes(searchValue);
-            let ingredientMatch = recipe[i].ingredients.some(ingredient =>
-                ingredient.ingredient.toLowerCase().includes(searchValue)
-            );
+    if (searchValue.length < 3)
+        return;
 
-            //Si il y a un match, on push les match dans le nouveau tableau
-            if (nameMatch || descriptionMatch || ingredientMatch) {
-                filteredRecipe.push(recipe[i]);
-            }
+    for (let i = 0; i < recipe.length; i++) {
+        let nameMatch = recipe[i].name.toLowerCase().includes(searchValue);
+        let descriptionMatch = recipe[i].description.toLowerCase().includes(searchValue);
+        let ingredientMatch = recipe[i].ingredients.some(ingredient =>
+            ingredient.ingredient.toLowerCase().includes(searchValue)
+        );
+
+        //S'il y a un match, on push les match dans le nouveau tableau
+        if (nameMatch || descriptionMatch || ingredientMatch) {
+            filteredRecipe.push(recipe[i]);
         }
-    } else {
-        //Sinon, le nouveau tableau est égal au tableau initial
-        filteredRecipe = recipe;
     }
-
     // enfin, on affiche le contenu du nouveau tableau avec la même logique d'affichage
     displayRecipe(filteredRecipe);
 });
