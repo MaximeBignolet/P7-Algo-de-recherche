@@ -225,8 +225,14 @@ const onInputChangeApplyFilterIngredientSearch = () => {
     const filteredIngredient = uniqueIngredients.filter((ingredient) => {
       return ingredient.toLowerCase().includes(searchIngredient);
     });
+    const filteredRecipes = recipe.filter((rec) =>
+      rec.ingredients.some((ingredient) =>
+        ingredient.ingredient.toLowerCase().includes(searchIngredient)
+      )
+    );
     const uniqueFilteredIngredient = [...new Set(filteredIngredient)];
     displayDropdownIngredient(uniqueFilteredIngredient);
+    displayRecipe(filteredRecipes);
   });
 };
 
@@ -237,8 +243,12 @@ const onInputChangeApplyFilterApplianceSearch = () => {
     const filteredAppliance = uniqueAppliance.filter((appliance) => {
       return appliance.toLowerCase().includes(searchAppliance);
     });
+    const filteredRecipes = recipe.filter((rec) =>
+      rec.appliance.toLowerCase().includes(searchAppliance)
+    );
     const uniqueFilteredAppliance = [...new Set(filteredAppliance)];
     displayDropdownAppliance(uniqueFilteredAppliance);
+    displayRecipe(filteredRecipes);
   });
 };
 
@@ -249,8 +259,15 @@ const onInputChangeApplyFilterUstensilSearch = () => {
     const filteredUstensils = uniqueUstensil.filter((ustensil) => {
       return ustensil.toLowerCase().includes(searchUstensil);
     });
+    const filteredRecipes = recipe.filter((rec) =>
+      rec.ustensils.some((ustensil) =>
+        ustensil.toLowerCase().includes(searchUstensil)
+      )
+    );
     const uniqueFilteredUstensils = [...new Set(filteredUstensils)];
     displayDropdownUstensil(uniqueFilteredUstensils);
+    console.log(filteredRecipes);
+    displayRecipe(filteredRecipes);
   });
 };
 
