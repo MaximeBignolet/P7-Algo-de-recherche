@@ -8,7 +8,7 @@ function displayRecipe(recipe) {
 
   recipe.slice(0, 10).forEach((recette) => {
     recipeContainer.innerHTML += `
-    <div class="card mt-10 bg-white rounded-xl shadow-cardShadow lg:w-[27%] md:w-[45%]">
+    <div class="card mt-16 bg-white rounded-xl shadow-cardShadow lg:w-[27%] md:w-[45%]">
         <img src="./assets/img/${recette.image}" alt="${
       recette.name
     }" class="rounded-t-lg h-[200px] md:h-[250px] w-full object-cover"/>
@@ -74,12 +74,11 @@ const searchFilter = () => {
     } else {
       displayRecipe(recipe);
     }
-  }, 300); // Définissez un délai de 300 ms
+  }, 300);
 
   inputSearch.addEventListener("input", handleInput);
 };
 
-// Prétraitement des données (à faire une seule fois, si les données ne changent pas fréquemment)
 recipe.forEach((rec) => {
   rec.lowerName = rec.name.toLowerCase();
   rec.lowerDescription = rec.description.toLowerCase();
@@ -182,7 +181,7 @@ const displayDropdownIngredient = (uniqueIngredients) => {
       .slice(0, 10)
       .map(
         (ingredient) =>
-          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]">${ingredient}</li>`
+          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${ingredient}">${ingredient}</li>`
       )
       .join("")}`;
   });
@@ -195,7 +194,7 @@ const displayDropdownAppliance = (uniqueAppliance) => {
       .slice(0, 10)
       .map(
         (appliance) =>
-          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]">${appliance}</li>`
+          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${appliance}">${appliance}</li>`
       )
       .join("")}`;
   });
@@ -208,7 +207,7 @@ const displayDropdownUstensil = (uniqueUstensil) => {
       .slice(0, 10)
       .map(
         (ustensil) =>
-          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]">${ustensil}</li>`
+          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${ustensil}">${ustensil}</li>`
       )
       .join("")}`;
   });
@@ -225,14 +224,32 @@ const onInputChangeApplyFilterIngredientSearch = () => {
     const filteredIngredient = uniqueIngredients.filter((ingredient) => {
       return ingredient.toLowerCase().includes(searchIngredient);
     });
-    const filteredRecipes = recipe.filter((rec) =>
-      rec.ingredients.some((ingredient) =>
-        ingredient.ingredient.toLowerCase().includes(searchIngredient)
-      )
-    );
+
     const uniqueFilteredIngredient = [...new Set(filteredIngredient)];
     displayDropdownIngredient(uniqueFilteredIngredient);
+  });
+
+  const ingredientTagContainer = document.querySelector(".ingredient-tag");
+  ingredientContainer.addEventListener("click", (e) => {
+    hiddenIngredient.classList.add("hidden");
+    let ingredientId = e.target.id;
+    ingredientTagContainer.innerHTML = `
+    <span class="absolute right-1 top-1 cursor-pointer" id="close-tags-ingredient">x</span>
+      <p class="bg-[#FFD15B] p-2 my-2  text-xs rounded-md text-center" id="tags-ingredient">${ingredientId}</p>    
+    `;
+    const filteredRecipes = recipe.filter((rec) =>
+      rec.ingredients.some((ingredient) => {
+        return ingredient.ingredient.toLowerCase().includes(ingredientId);
+      })
+    );
     displayRecipe(filteredRecipes);
+    const closeTags = document.getElementById("close-tags-ingredient");
+    const tag = document.getElementById("tags-ingredient");
+    closeTags.addEventListener("click", () => {
+      displayRecipe(recipe);
+      tag.classList.add("hidden");
+      closeTags.classList.add("hidden");
+    });
   });
 };
 
@@ -243,12 +260,28 @@ const onInputChangeApplyFilterApplianceSearch = () => {
     const filteredAppliance = uniqueAppliance.filter((appliance) => {
       return appliance.toLowerCase().includes(searchAppliance);
     });
-    const filteredRecipes = recipe.filter((rec) =>
-      rec.appliance.toLowerCase().includes(searchAppliance)
-    );
     const uniqueFilteredAppliance = [...new Set(filteredAppliance)];
     displayDropdownAppliance(uniqueFilteredAppliance);
+  });
+  const applianceTagContainer = document.querySelector(".appareils-tag");
+  applianceContainer.addEventListener("click", (e) => {
+    hiddenAppliance.classList.add("hidden");
+    let applianceId = e.target.id;
+    applianceTagContainer.innerHTML = `
+    <span class="absolute right-1 top-1 cursor-pointer" id="close-tags-appliance">x</span>
+      <p class="bg-[#FFD15B] p-2 my-2  text-xs rounded-md text-center" id="tags-appliance">${applianceId}</p>    
+    `;
+    const filteredRecipes = recipe.filter((rec) =>
+      rec.appliance.includes(applianceId)
+    );
     displayRecipe(filteredRecipes);
+    const closeTags = document.getElementById("close-tags-appliance");
+    const tag = document.getElementById("tags-appliance");
+    closeTags.addEventListener("click", () => {
+      displayRecipe(recipe);
+      tag.classList.add("hidden");
+      closeTags.classList.add("hidden");
+    });
   });
 };
 
@@ -268,6 +301,29 @@ const onInputChangeApplyFilterUstensilSearch = () => {
     displayDropdownUstensil(uniqueFilteredUstensils);
     console.log(filteredRecipes);
     displayRecipe(filteredRecipes);
+  });
+
+  const ustensilTagContainer = document.querySelector(".ustensiles-tag");
+  ustensilsContainer.addEventListener("click", (e) => {
+    hiddenUstensils.classList.add("hidden");
+    let ustensilId = e.target.id;
+    ustensilTagContainer.innerHTML = `
+    <span class="absolute right-1 top-1 cursor-pointer" id="close-tags-ustensil">x</span>
+      <p class="bg-[#FFD15B] p-2 my-2  text-xs rounded-md text-center" id="tags-ustensil">${ustensilId}</p>    
+    `;
+    const filteredRecipes = recipe.filter((rec) =>
+      rec.ustensils.some((ustensil) =>
+        ustensil.toLowerCase().includes(ustensilId)
+      )
+    );
+    displayRecipe(filteredRecipes);
+    const closeTags = document.getElementById("close-tags-ustensil");
+    const tag = document.getElementById("tags-ustensil");
+    closeTags.addEventListener("click", () => {
+      displayRecipe(recipe);
+      tag.classList.add("hidden");
+      closeTags.classList.add("hidden");
+    });
   });
 };
 
