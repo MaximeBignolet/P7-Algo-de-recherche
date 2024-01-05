@@ -103,6 +103,12 @@ const debounce = (func, delay) => {
   };
 };
 
+const changeDynamicallyTotalRecipe = (totalRecipe) => {
+  totalRecipeContainer.innerHTML = "";
+
+  totalRecipeContainer.innerHTML += `${totalRecipe} recettes`;
+};
+
 const searchFilter = () => {
   const inputSearch = document.getElementById("search");
   let searchValue = "";
@@ -137,7 +143,9 @@ const searchFilter = () => {
         ...new Set(mappedFilteredUstensilAppliance),
       ];
       if (filteredRecipe.length) {
+        console.log(filteredRecipe.length);
         displayRecipe(filteredRecipe);
+        changeDynamicallyTotalRecipe(filteredRecipe.length);
         displayDropdownIngredient(allIngredients);
         displayDropdownUstensil(allUstensilAfterIngredientFilter);
         displayDropdownAppliance(allApplianceAfterIngredientFilter);
@@ -147,6 +155,7 @@ const searchFilter = () => {
       }
     } else {
       displayRecipe(recipe);
+      changeDynamicallyTotalRecipe(recipe.length);
       displayDropdownIngredient(uniqueIngredients);
       displayDropdownUstensil(uniqueUstensil);
       displayDropdownAppliance(uniqueAppliance);
@@ -290,10 +299,12 @@ const onInputChangeApplyFilterIngredientSearch = () => {
     displayDropdownIngredient(allIngredients);
     displayDropdownUstensil(allUstensilAfterIngredientFilter);
     displayDropdownAppliance(allApplianceAfterIngredientFilter);
+    changeDynamicallyTotalRecipe(filteredRecipes.length);
     const closeTags = document.getElementById("close-tags-ingredient");
     const tag = document.getElementById("tags-ingredient");
     closeTags.addEventListener("click", () => {
       displayRecipe(recipe);
+      changeDynamicallyTotalRecipe(recipe.length);
       displayDropdownIngredient(uniqueIngredients);
       tag.classList.add("hidden");
       closeTags.classList.add("hidden");
@@ -334,12 +345,14 @@ const onInputChangeApplyFilterApplianceSearch = () => {
     const allUstensilAfterApplianceFilter =
       mappedFilteredApplianceUstensils.flat();
     displayRecipe(filteredRecipesAppliance);
+    changeDynamicallyTotalRecipe(filteredRecipesAppliance.length);
     displayDropdownIngredient(allIngredientAfterApplianceFilter);
     displayDropdownUstensil(allUstensilAfterApplianceFilter);
     const closeTags = document.getElementById("close-tags-appliance");
     const tag = document.getElementById("tags-appliance");
     closeTags.addEventListener("click", () => {
       displayRecipe(recipe);
+      changeDynamicallyTotalRecipe(recipe.length);
       displayDropdownAppliance(uniqueAppliance);
       tag.classList.add("hidden");
       closeTags.classList.add("hidden");
@@ -390,6 +403,7 @@ const onInputChangeApplyFilterUstensilSearch = () => {
     ];
 
     displayRecipe(filteredRecipesUstensil);
+    changeDynamicallyTotalRecipe(filteredRecipesUstensil.length);
     displayDropdownAppliance(allApplianceAfterUstensilFilter);
     displayDropdownIngredient(allIngredientAfterUstensilFilter);
     const closeTags = document.getElementById("close-tags-ustensil");
@@ -397,6 +411,7 @@ const onInputChangeApplyFilterUstensilSearch = () => {
     closeTags.addEventListener("click", () => {
       displayRecipe(recipe);
       displayDropdownIngredient(uniqueUstensil);
+      changeDynamicallyTotalRecipe(recipe.length);
       tag.classList.add("hidden");
       closeTags.classList.add("hidden");
     });
@@ -416,4 +431,5 @@ onInputChangeApplyFilterIngredientSearch();
 onInputChangeApplyFilterApplianceSearch();
 onInputChangeApplyFilterUstensilSearch();
 searchFilter();
+changeDynamicallyTotalRecipe(recipe.length);
 displayRecipe(recipe);
