@@ -1,48 +1,97 @@
 import recipe from "./recipe.js";
 
-//TODO commenter le code pour plus de clarté
+// Constantes
+const recipeContainer = document.getElementById("recipe-container");
+const totalRecipeContainer = document.querySelector(".total_recette_container");
+const dropDownIngredients = document.getElementById(
+  "ingredients-filter-button"
+);
+const hiddenIngredient = document.getElementById("hidden-ingredients-dropdown");
+const ingredientContainer = document.getElementById(
+  "ingredient-dropdown-container"
+);
+const ingredientInputSearch = document.getElementById(
+  "ingredient-dropdown-search-1"
+);
 
+const uniqueIngredients = [
+  ...new Set(
+    recipe.flatMap((rec) =>
+      rec.ingredients.map((ing) => ing.ingredient.toLowerCase())
+    )
+  ),
+];
+const dropdownAppliance = document.getElementById("appareils-filter-button");
+const hiddenAppliance = document.getElementById("hidden-appareils-dropdown");
+const applianceContainer = document.getElementById(
+  "appareils-dropdown-container"
+);
+const applianceInputSearch = document.getElementById(
+  "appareils-dropdown-search-1"
+);
+const uniqueAppliance = [...new Set(recipe.flatMap((rec) => rec.appliance))];
+const dropdownUstensils = document.getElementById("ustensiles-filter-button");
+const hiddenUstensils = document.getElementById("hidden-ustensiles-dropdown");
+const ustensilsContainer = document.getElementById(
+  "ustensiles-dropdown-container"
+);
+const ustensilInputSearch = document.getElementById(
+  "ustensiles-dropdown-search-1"
+);
+const uniqueUstensil = [
+  ...new Set(
+    recipe.flatMap((rec) =>
+      rec.ustensils.map((ustensil) => ustensil.toLowerCase())
+    )
+  ),
+];
+
+// Variables
+let toggleDropdownAppliance = false;
+let toggleDropdownIngredient = false;
+let toggleDropdownUstensils = false;
+let filteredRecipes = [];
+let allIngredients;
+let mappedFilteredRecipe;
+
+// Fonctions
 function displayRecipe(recipe) {
-  const recipeContainer = document.getElementById("recipe-container");
   recipeContainer.innerHTML = "";
-
   recipe.slice(0, 10).forEach((recette) => {
     recipeContainer.innerHTML += `
-    <div class="card mt-16 bg-white rounded-xl shadow-cardShadow lg:w-[27%] md:w-[45%]">
-        <img src="./assets/img/${recette.image}" alt="${
+      <div class="card mt-16 bg-white rounded-xl shadow-cardShadow lg:w-[27%] md:w-[45%]">
+      <img src="./assets/img/${recette.image}" alt="${
       recette.name
     }" class="rounded-t-lg h-[200px] md:h-[250px] w-full object-cover"/>
-        <div class="pl-4">
-        <h2 class="font-semibold font-anton pt-[32px] text-xl">${
-          recette.name
-        }</h2>
-        <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide pt-[29px]">RECETTE</p>
-        <p class="font-manrope pt-5 line-clamp-4 mb-[29px] pr-5">${
-          recette.description
-        }</p>
-        <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide">INGRÉDIENTS</p>
-        <ul class="flex flex-wrap gap-10 justify-between w-4/5 mb-10 mt-5">
-        ${recette.ingredients
-          .map((ingredient) => {
-            if (ingredient.unit === undefined) {
-              ingredient.unit = "";
-            }
-            if (ingredient.quantity === undefined) {
-              ingredient.quantity = "";
-            }
-            return `
-            <li class="font-semibold w-[42%] md:text-sm">${ingredient.ingredient}<br/><span class="text-[#7A7A7A] md:text-xs">${ingredient.quantity} ${ingredient.unit}</span></li>
-            `;
-          })
-          .join("")}
-            </ul>
+      <div class="pl-4">
+      <h2 class="font-semibold font-anton pt-[32px] text-xl">${
+        recette.name
+      }</h2>
+      <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide pt-[29px]">RECETTE</p>
+      <p class="font-manrope pt-5 line-clamp-4 mb-[29px] pr-5">${
+        recette.description
+      }</p>
+      <p class="text-[#7A7A7A] font-semibold font-manrope tracking-wide">INGRÉDIENTS</p>
+      <ul class="flex flex-wrap gap-10 justify-between w-4/5 mb-10 mt-5">
+      ${recette.ingredients
+        .map((ingredient) => {
+          if (ingredient.unit === undefined) {
+            ingredient.unit = "";
+          }
+          if (ingredient.quantity === undefined) {
+            ingredient.quantity = "";
+          }
+          return `
+          <li class="font-semibold w-[42%] md:text-sm">${ingredient.ingredient}<br/><span class="text-[#7A7A7A] md:text-xs">${ingredient.quantity} ${ingredient.unit}</span></li>
+          `;
+        })
+        .join("")}
+        </ul>
         </div>
-    </div>
-    `;
+        </div>
+        `;
   });
 }
-
-displayRecipe(recipe);
 
 const debounce = (func, delay) => {
   let debounceTimer;
@@ -70,12 +119,39 @@ const searchFilter = () => {
           )
         );
       });
-      displayRecipe(filteredRecipe);
+      mappedFilteredRecipe = filteredRecipe.map((rec) =>
+        rec.ingredients.map((ingred) => ingred.ingredient)
+      );
+      allIngredients = mappedFilteredRecipe.flat();
+      const mappedFilteredApplianceUstensils = filteredRecipe.map((ust) =>
+        ust.ustensils.map((ustensil) => ustensil)
+      );
+      const allUstensilAfterIngredientFilter =
+        mappedFilteredApplianceUstensils.flat();
+
+      const mappedFilteredUstensilAppliance = filteredRecipe.map(
+        (appliance) => appliance.appliance
+      );
+
+      const allApplianceAfterIngredientFilter = [
+        ...new Set(mappedFilteredUstensilAppliance),
+      ];
+      if (filteredRecipe.length) {
+        displayRecipe(filteredRecipe);
+        displayDropdownIngredient(allIngredients);
+        displayDropdownUstensil(allUstensilAfterIngredientFilter);
+        displayDropdownAppliance(allApplianceAfterIngredientFilter);
+      } else {
+        recipeContainer.innerHTML =
+          "<h2 class='h-screen flex  items-center text-3xl text-[#FFD15B] font-anton uppercase'>Désolé, aucune recette ne correspond à votre recherche</h2>";
+      }
     } else {
       displayRecipe(recipe);
+      displayDropdownIngredient(uniqueIngredients);
+      displayDropdownUstensil(uniqueUstensil);
+      displayDropdownAppliance(uniqueAppliance);
     }
   }, 300);
-
   inputSearch.addEventListener("input", handleInput);
 };
 
@@ -87,29 +163,6 @@ recipe.forEach((rec) => {
   );
 });
 
-searchFilter();
-
-const dropDownIngredients = document.getElementById(
-  "ingredients-filter-button"
-);
-const hiddenIngredient = document.getElementById("hidden-ingredients-dropdown");
-const ingredientContainer = document.getElementById(
-  "ingredient-dropdown-container"
-);
-const ingredientInputSearch = document.getElementById(
-  "ingredient-dropdown-search-1"
-);
-
-const uniqueIngredients = [
-  ...new Set(
-    recipe.flatMap((rec) =>
-      rec.ingredients.map((ing) => ing.ingredient.toLowerCase())
-    )
-  ),
-];
-
-let toggleDropdownIngredient = false;
-
 const onClickOpenDropdownIngredients = () => {
   toggleDropdownIngredient = !toggleDropdownIngredient;
   if (toggleDropdownIngredient) {
@@ -118,21 +171,6 @@ const onClickOpenDropdownIngredients = () => {
     hiddenIngredient.classList.add("hidden");
   }
 };
-
-dropDownIngredients.addEventListener("click", onClickOpenDropdownIngredients);
-
-const dropdownAppliance = document.getElementById("appareils-filter-button");
-const hiddenAppliance = document.getElementById("hidden-appareils-dropdown");
-const applianceContainer = document.getElementById(
-  "appareils-dropdown-container"
-);
-const applianceInputSearch = document.getElementById(
-  "appareils-dropdown-search-1"
-);
-
-const uniqueAppliance = [...new Set(recipe.flatMap((rec) => rec.appliance))];
-
-let toggleDropdownAppliance = false;
 
 const onClickOpenDropdownAppliances = () => {
   toggleDropdownAppliance = !toggleDropdownAppliance;
@@ -144,25 +182,6 @@ const onClickOpenDropdownAppliances = () => {
   }
 };
 
-dropdownAppliance.addEventListener("click", onClickOpenDropdownAppliances);
-
-const dropdownUstensils = document.getElementById("ustensiles-filter-button");
-const hiddenUstensils = document.getElementById("hidden-ustensiles-dropdown");
-const ustensilsContainer = document.getElementById(
-  "ustensiles-dropdown-container"
-);
-const ustensilInputSearch = document.getElementById(
-  "ustensiles-dropdown-search-1"
-);
-const uniqueUstensil = [
-  ...new Set(
-    recipe.flatMap((rec) =>
-      rec.ustensils.map((ustensil) => ustensil.toLowerCase())
-    )
-  ),
-];
-let toggleDropdownUstensils = false;
-
 const onClickOpenDropdownUstenstils = () => {
   toggleDropdownUstensils = !toggleDropdownUstensils;
   if (toggleDropdownUstensils) {
@@ -172,50 +191,59 @@ const onClickOpenDropdownUstenstils = () => {
   }
 };
 
-dropdownUstensils.addEventListener("click", onClickOpenDropdownUstenstils);
-
 const displayDropdownIngredient = (uniqueIngredients) => {
   ingredientContainer.innerHTML = "";
   recipe.forEach(() => {
-    ingredientContainer.innerHTML = `${uniqueIngredients
-      .slice(0, 10)
-      .map(
-        (ingredient) =>
-          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${ingredient}">${ingredient}</li>`
-      )
-      .join("")}`;
+    if (uniqueIngredients.length) {
+      ingredientContainer.innerHTML = `${uniqueIngredients
+        .slice(0, 10)
+        .map(
+          (ingredient) =>
+            `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${ingredient}">${ingredient}</li>`
+        )
+        .join("")}`;
+    } else {
+      ingredientContainer.innerHTML =
+        "<p class='text-xs text-[#FFD15B] font-anton'>Aucun ingrédients trouvés.</p>";
+    }
   });
 };
 
 const displayDropdownAppliance = (uniqueAppliance) => {
   applianceContainer.innerHTML = "";
   recipe.forEach(() => {
-    applianceContainer.innerHTML = `${uniqueAppliance
-      .slice(0, 10)
-      .map(
-        (appliance) =>
-          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${appliance}">${appliance}</li>`
-      )
-      .join("")}`;
+    if (uniqueAppliance.length) {
+      applianceContainer.innerHTML = `${uniqueAppliance
+        .slice(0, 10)
+        .map(
+          (appliance) =>
+            `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${appliance}">${appliance}</li>`
+        )
+        .join("")}`;
+    } else {
+      applianceContainer.innerHTML =
+        "<p class='text-xs text-[#FFD15B] font-anton'>Aucun appareils trouvés.</p>";
+    }
   });
 };
 
 const displayDropdownUstensil = (uniqueUstensil) => {
   ustensilsContainer.innerHTML = "";
   recipe.forEach(() => {
-    ustensilsContainer.innerHTML = `${uniqueUstensil
-      .slice(0, 10)
-      .map(
-        (ustensil) =>
-          `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${ustensil}">${ustensil}</li>`
-      )
-      .join("")}`;
+    if (uniqueUstensil.length) {
+      ustensilsContainer.innerHTML = `${uniqueUstensil
+        .slice(0, 10)
+        .map(
+          (ustensil) =>
+            `<li class="bg-white p-1 cursor-pointer list-none hover:bg-[#FFD15B]" id="${ustensil}">${ustensil}</li>`
+        )
+        .join("")}`;
+    } else {
+      ustensilsContainer.innerHTML =
+        "<p class='text-xs text-[#FFD15B] font-anton'>Aucun ustensiles trouvés.</p>";
+    }
   });
 };
-
-displayDropdownIngredient(uniqueIngredients);
-displayDropdownAppliance(uniqueAppliance);
-displayDropdownUstensil(uniqueUstensil);
 
 const onInputChangeApplyFilterIngredientSearch = () => {
   let searchIngredient = "";
@@ -224,11 +252,9 @@ const onInputChangeApplyFilterIngredientSearch = () => {
     const filteredIngredient = uniqueIngredients.filter((ingredient) => {
       return ingredient.toLowerCase().includes(searchIngredient);
     });
-
     const uniqueFilteredIngredient = [...new Set(filteredIngredient)];
     displayDropdownIngredient(uniqueFilteredIngredient);
   });
-
   const ingredientTagContainer = document.querySelector(".ingredient-tag");
   ingredientContainer.addEventListener("click", (e) => {
     hiddenIngredient.classList.add("hidden");
@@ -237,16 +263,38 @@ const onInputChangeApplyFilterIngredientSearch = () => {
     <span class="absolute right-1 top-1 cursor-pointer" id="close-tags-ingredient">x</span>
       <p class="bg-[#FFD15B] p-2 my-2  text-xs rounded-md text-center" id="tags-ingredient">${ingredientId}</p>    
     `;
-    const filteredRecipes = recipe.filter((rec) =>
+    filteredRecipes = recipe.filter((rec) =>
       rec.ingredients.some((ingredient) => {
         return ingredient.ingredient.toLowerCase().includes(ingredientId);
       })
     );
+    mappedFilteredRecipe = filteredRecipes.map((rec) =>
+      rec.ingredients.map((ingred) => ingred.ingredient)
+    );
+    allIngredients = mappedFilteredRecipe.flat();
+    const mappedFilteredApplianceUstensils = filteredRecipes.map((ust) =>
+      ust.ustensils.map((ustensil) => ustensil)
+    );
+    const allUstensilAfterIngredientFilter =
+      mappedFilteredApplianceUstensils.flat();
+
+    const mappedFilteredUstensilAppliance = filteredRecipes.map(
+      (appliance) => appliance.appliance
+    );
+
+    const allApplianceAfterIngredientFilter = [
+      ...new Set(mappedFilteredUstensilAppliance),
+    ];
+
     displayRecipe(filteredRecipes);
+    displayDropdownIngredient(allIngredients);
+    displayDropdownUstensil(allUstensilAfterIngredientFilter);
+    displayDropdownAppliance(allApplianceAfterIngredientFilter);
     const closeTags = document.getElementById("close-tags-ingredient");
     const tag = document.getElementById("tags-ingredient");
     closeTags.addEventListener("click", () => {
       displayRecipe(recipe);
+      displayDropdownIngredient(uniqueIngredients);
       tag.classList.add("hidden");
       closeTags.classList.add("hidden");
     });
@@ -265,20 +313,34 @@ const onInputChangeApplyFilterApplianceSearch = () => {
   });
   const applianceTagContainer = document.querySelector(".appareils-tag");
   applianceContainer.addEventListener("click", (e) => {
+    let filteredRecipesAppliance = [];
     hiddenAppliance.classList.add("hidden");
     let applianceId = e.target.id;
     applianceTagContainer.innerHTML = `
     <span class="absolute right-1 top-1 cursor-pointer" id="close-tags-appliance">x</span>
       <p class="bg-[#FFD15B] p-2 my-2  text-xs rounded-md text-center" id="tags-appliance">${applianceId}</p>    
     `;
-    const filteredRecipes = recipe.filter((rec) =>
+    filteredRecipesAppliance = recipe.filter((rec) =>
       rec.appliance.includes(applianceId)
     );
-    displayRecipe(filteredRecipes);
+    const mappedFilteredApplianceIngredient = filteredRecipesAppliance.map(
+      (rec) => rec.ingredients.map((ingred) => ingred.ingredient)
+    );
+    const mappedFilteredApplianceUstensils = filteredRecipesAppliance.map(
+      (ust) => ust.ustensils.map((ustensil) => ustensil)
+    );
+    const allIngredientAfterApplianceFilter =
+      mappedFilteredApplianceIngredient.flat();
+    const allUstensilAfterApplianceFilter =
+      mappedFilteredApplianceUstensils.flat();
+    displayRecipe(filteredRecipesAppliance);
+    displayDropdownIngredient(allIngredientAfterApplianceFilter);
+    displayDropdownUstensil(allUstensilAfterApplianceFilter);
     const closeTags = document.getElementById("close-tags-appliance");
     const tag = document.getElementById("tags-appliance");
     closeTags.addEventListener("click", () => {
       displayRecipe(recipe);
+      displayDropdownAppliance(uniqueAppliance);
       tag.classList.add("hidden");
       closeTags.classList.add("hidden");
     });
@@ -299,7 +361,6 @@ const onInputChangeApplyFilterUstensilSearch = () => {
     );
     const uniqueFilteredUstensils = [...new Set(filteredUstensils)];
     displayDropdownUstensil(uniqueFilteredUstensils);
-    console.log(filteredRecipes);
     displayRecipe(filteredRecipes);
   });
 
@@ -311,22 +372,48 @@ const onInputChangeApplyFilterUstensilSearch = () => {
     <span class="absolute right-1 top-1 cursor-pointer" id="close-tags-ustensil">x</span>
       <p class="bg-[#FFD15B] p-2 my-2  text-xs rounded-md text-center" id="tags-ustensil">${ustensilId}</p>    
     `;
-    const filteredRecipes = recipe.filter((rec) =>
+    const filteredRecipesUstensil = recipe.filter((rec) =>
       rec.ustensils.some((ustensil) =>
         ustensil.toLowerCase().includes(ustensilId)
       )
     );
-    displayRecipe(filteredRecipes);
+    const mappedFilteredUstensilIngredient = filteredRecipesUstensil.map(
+      (rec) => rec.ingredients.map((ingred) => ingred.ingredient)
+    );
+    const mappedFilteredUstensilAppliance = filteredRecipesUstensil.map(
+      (appliance) => appliance.appliance
+    );
+    const allIngredientAfterUstensilFilter =
+      mappedFilteredUstensilIngredient.flat();
+    const allApplianceAfterUstensilFilter = [
+      ...new Set(mappedFilteredUstensilAppliance),
+    ];
+
+    displayRecipe(filteredRecipesUstensil);
+    displayDropdownAppliance(allApplianceAfterUstensilFilter);
+    displayDropdownIngredient(allIngredientAfterUstensilFilter);
     const closeTags = document.getElementById("close-tags-ustensil");
     const tag = document.getElementById("tags-ustensil");
     closeTags.addEventListener("click", () => {
       displayRecipe(recipe);
+      displayDropdownIngredient(uniqueUstensil);
       tag.classList.add("hidden");
       closeTags.classList.add("hidden");
     });
   });
 };
 
+//Event Listener
+dropDownIngredients.addEventListener("click", onClickOpenDropdownIngredients);
+dropdownAppliance.addEventListener("click", onClickOpenDropdownAppliances);
+dropdownUstensils.addEventListener("click", onClickOpenDropdownUstenstils);
+
+//Played function
+displayDropdownIngredient(uniqueIngredients);
+displayDropdownAppliance(uniqueAppliance);
+displayDropdownUstensil(uniqueUstensil);
 onInputChangeApplyFilterIngredientSearch();
 onInputChangeApplyFilterApplianceSearch();
 onInputChangeApplyFilterUstensilSearch();
+searchFilter();
+displayRecipe(recipe);
