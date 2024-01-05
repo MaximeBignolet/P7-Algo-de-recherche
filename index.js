@@ -93,6 +93,7 @@ function displayRecipe(recipe) {
   });
 }
 
+//Temps de décalage pour gérer l'affichage avec la barre de recherche
 const debounce = (func, delay) => {
   let debounceTimer;
   return function () {
@@ -163,7 +164,7 @@ const searchFilter = () => {
   }, 300);
   inputSearch.addEventListener("input", handleInput);
 };
-
+// Transformation en lowercase de ce qui peut être cherché dans la barre de recherche principale
 recipe.forEach((rec) => {
   rec.lowerName = rec.name.toLowerCase();
   rec.lowerDescription = rec.description.toLowerCase();
